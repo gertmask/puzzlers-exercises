@@ -18,6 +18,12 @@
     </modules>
     
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${org.apache.commons}</version>
+        </dependency>
         <!-- logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -121,6 +127,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <!-- libs -->
+        <org.apache.commons>3.7</org.apache.commons>
+        <!-- unit testing -->
         <junit.version>4.12</junit.version>
         <org.hamcrest.version>1.3</org.hamcrest.version>
         <mockito.version>2.8.9</mockito.version>
