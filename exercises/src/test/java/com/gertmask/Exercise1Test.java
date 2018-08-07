@@ -20,6 +20,14 @@ public class Exercise1Test {
     public static final TestData TD_1 = new TestData(new int[]{2, 4, 3, 3}, 6, toPairArray(2, 4, 3, 3));
     @DataPoint
     public static final TestData TD_2 = new TestData(new int[]{5, 3, 7, 0, 1, 4, 2}, 5, toPairArray(5, 0, 3, 2, 1, 4));
+    @DataPoint
+    public static final TestData TD_3 = new TestData(new int[]{1, 7, 9, 11, 5, 8, 6}, 16, toPairArray(7, 9, 11, 5));
+    /*@DataPoint
+    // reversed pairs: {7, 9} + {9, 7}. should end up with {7, 9}
+    public static final TestData TD_4 = new TestData(new int[]{1, 7, 9, 11, 5, 8, 6, 9, 7}, 16, toPairArray(7, 9, 11, 5));*/
+    @DataPoint
+    // duplicate pairs: {8, 8} + {8, 8}. should end up with {8, 8}
+    public static final TestData TD_5 = new TestData(new int[]{1, 7, 9, 11, 5, 8, 6, 8, 8}, 16, toPairArray(7, 9, 11, 5, 8, 8));
 
     private Exercise1 exc;
 
