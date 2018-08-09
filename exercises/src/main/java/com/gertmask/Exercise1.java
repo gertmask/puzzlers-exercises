@@ -1,9 +1,10 @@
 package com.gertmask;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
@@ -47,7 +48,8 @@ public class Exercise1 {
                 int left = input[i];
                 int right = input[j];
 
-                if (left + right == target) {
+                if (left + right == target &&
+                        !result.contains(Pair.of(right, left))) { // test for reversed pair
                     result.add(Pair.of(left, right));
                 }
             }
@@ -56,10 +58,42 @@ public class Exercise1 {
         return result.toArray(EMPTY_PAIR_ARRAY);
     }
 
-    public Pair<Integer, Integer>[] solutionWithHashes(int[] input, int target) {
-        List<Pair<Integer, Integer>> result = new ArrayList<>();
+    public Pair<Integer, Integer>[] solutionWithHashedInput(int[] input, int target) {
+        Set<Pair<Integer, Integer>> result = new LinkedHashSet<>();
 
-        
+        Set<Integer> inputSet = new HashSet<>(Arrays.asList(ArrayUtils.toObject(input)));
+
+        for (int left : input) {
+            Integer right = target - left;
+
+            if (inputSet.contains(right) &&
+                    !result.contains(Pair.of(right, left))) {
+                result.add(Pair.of(left, right));
+
+                inputSet.removeAll(Arrays.asList(left, right));
+            }
+        }
+
+        return result.toArray(EMPTY_PAIR_ARRAY);
+    }
+
+    public Pair<Integer, Integer>[] solutionWithSortedInput(int[] input, int target) {
+        Set<Pair<Integer, Integer>> result = new LinkedHashSet<>();
+
+        int[] sorted = ArrayUtils.clone(input);
+        Arrays.sort(sorted);
+
+        for (int i = 0; i < sorted.length; i++) {
+            int left = sorted[i];
+            int right = target - left;
+
+            int ridx = Arrays.binarySearch(sorted, right);
+            if (ridx != i
+                    && (ridx >=0 && ridx < sorted.length)
+                    && !result.contains(Pair.of(right, left))) {
+                result.add(Pair.of(left, right));
+            }
+        }
 
         return result.toArray(EMPTY_PAIR_ARRAY);
     }

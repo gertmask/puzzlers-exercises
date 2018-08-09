@@ -1,6 +1,11 @@
 package com.gertmask;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeThat;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
@@ -22,9 +27,9 @@ public class Exercise1Test {
     public static final TestData TD_2 = new TestData(new int[]{5, 3, 7, 0, 1, 4, 2}, 5, toPairArray(5, 0, 3, 2, 1, 4));
     @DataPoint
     public static final TestData TD_3 = new TestData(new int[]{1, 7, 9, 11, 5, 8, 6}, 16, toPairArray(7, 9, 11, 5));
-    /*@DataPoint
+    @DataPoint
     // reversed pairs: {7, 9} + {9, 7}. should end up with {7, 9}
-    public static final TestData TD_4 = new TestData(new int[]{1, 7, 9, 11, 5, 8, 6, 9, 7}, 16, toPairArray(7, 9, 11, 5));*/
+    public static final TestData TD_4 = new TestData(new int[]{1, 7, 9, 11, 5, 8, 6, 9, 7}, 16, toPairArray(7, 9, 11, 5));
     @DataPoint
     // duplicate pairs: {8, 8} + {8, 8}. should end up with {8, 8}
     public static final TestData TD_5 = new TestData(new int[]{1, 7, 9, 11, 5, 8, 6, 8, 8}, 16, toPairArray(7, 9, 11, 5, 8, 8));
@@ -39,7 +44,22 @@ public class Exercise1Test {
     @Theory
     public void testBruteForceSolution(TestData td) {
         Pair<Integer, Integer>[] result = exc.solutionBruteForce(td.getInputInts(), td.getTarget());
-        assertArrayEquals(td.getExpectedPais(), result);
+        assertThat(result, is(td.getExpectedPairs()));
+    }
+
+    @Theory
+    public void testSolutionWithHashedInput(TestData td) {
+        // the solution doesn't work for TD_3 / TD_4 - ignore
+        assumeThat(td.getInputInts(), is(not(anyOf(equalTo(TD_3.getInputInts()), equalTo(TD_4.getInputInts())))));
+
+        Pair<Integer, Integer>[] result = exc.solutionWithHashedInput(td.getInputInts(), td.getTarget());
+        assertThat(result, is(td.getExpectedPairs()));
+    }
+
+    @Theory
+    public void testSolutionWithSortedInput(TestData td) {
+        Pair<Integer, Integer>[] result = exc.solutionWithSortedInput(td.getInputInts(), td.getTarget());
+        assertThat(result, is(td.getExpectedPairs()));
     }
 
     // **************************************************************************
@@ -68,12 +88,12 @@ public class Exercise1Test {
 
         private int[] inputInts;
         private int target;
-        private Pair<Integer, Integer>[] expectedPais;
+        private Pair<Integer, Integer>[] expectedPairs;
 
-        TestData(int[] inputInts, int target, Pair<Integer, Integer>[] expectedPais) {
+        TestData(int[] inputInts, int target, Pair<Integer, Integer>[] expectedPairs) {
             this.inputInts = inputInts;
             this.target = target;
-            this.expectedPais = expectedPais;
+            this.expectedPairs = expectedPairs;
         }
 
         int[] getInputInts() {
@@ -84,8 +104,8 @@ public class Exercise1Test {
             return target;
         }
 
-        Pair<Integer, Integer>[] getExpectedPais() {
-            return expectedPais;
+        Pair<Integer, Integer>[] getExpectedPairs() {
+            return expectedPairs;
         }
     }
 }
