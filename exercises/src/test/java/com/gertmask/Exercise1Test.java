@@ -7,6 +7,12 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeThat;
 
+import java.util.Arrays;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.experimental.theories.DataPoint;
@@ -59,6 +65,17 @@ public class Exercise1Test {
     @Theory
     public void testSolutionWithSortedInput(TestData td) {
         Pair<Integer, Integer>[] result = exc.solutionWithSortedInput(td.getInputInts(), td.getTarget());
+
+        Arrays.stream(td.getExpectedPairs())
+                .flatMap(pair -> Arrays.stream(pairAsArray(pair)))
+                .sorted()
+                .collect(Collector.of(
+                        (Supplier<Holder<Integer>>) () -> new Holder<>(e -> e % 2 == 0),
+                        Holder::accept,
+                        Holder::merge,
+                        (holder) -> {return Arrays.asList(Pair.of(1, 2));},
+                        Collector.Characteristics.UNORDERED
+                        ));
         assertThat(result, is(td.getExpectedPairs()));
     }
 
@@ -78,6 +95,10 @@ public class Exercise1Test {
         }
 
         return result;
+    }
+
+    private static Integer[] pairAsArray(Pair<Integer, Integer> pair) {
+        return new Integer[] {pair.getLeft(), pair.getRight()};
     }
 
     // **************************************************************************
@@ -106,6 +127,41 @@ public class Exercise1Test {
 
         Pair<Integer, Integer>[] getExpectedPairs() {
             return expectedPairs;
+        }
+    }
+
+    private static class Holder<T> implements Consumer<T> {
+
+        private Predicate<T> decision;
+
+        private Stream<T> first;
+        private Stream<T> second;
+
+
+        public Holder(Predicate<T> decision) {
+            this.decision = decision;
+            first = Stream.empty();
+            second = Stream.empty();
+        }
+
+        public void accept(T e) {
+            if (decision.test(e)) {
+                first = Stream.concat(first, Stream.of(e));
+            } else {
+                second = Stream.concat(second, Stream.of(e));
+            }
+        }
+
+        public Holder<T> merge(Holder<T> other) {
+            return null;
+        }
+
+        public Stream<T> getFirst() {
+            return first;
+        }
+
+        public Stream<T> getSecond() {
+            return second;
         }
     }
 }
