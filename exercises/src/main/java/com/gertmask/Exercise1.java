@@ -37,7 +37,7 @@ import org.apache.commons.lang3.tuple.Pair;
 public class Exercise1 {
 
     @SuppressWarnings("unchecked")
-    private static final Pair<Integer, Integer>[] EMPTY_PAIR_ARRAY = new Pair[0];
+    public static final Pair<Integer, Integer>[] EMPTY_PAIR_ARRAY = new Pair[0];
 
 
     public Pair<Integer, Integer>[] solutionBruteForce(int[] input, int target) {
